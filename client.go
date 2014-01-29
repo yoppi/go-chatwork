@@ -16,8 +16,6 @@ type Http interface {
         Delete()
 }
 
-const BaseUrl = `https://api.chatwork.com/v1`
-
 type Client struct {
         ApiKey string
         BaseUrl string

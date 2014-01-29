@@ -1,5 +1,7 @@
 package gochatwork
 
+const BaseUrl = `https://api.chatwork.com/v1`
+
 func (c *Client) Me() string {
         return c.Get("/me", map[string]string{})
 }
