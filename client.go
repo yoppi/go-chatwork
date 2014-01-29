@@ -1,7 +1,9 @@
 package gochatwork
 
 import (
+	"bytes"
         "net/http"
+	"net/url"
         "strings"
         "io/ioutil"
         "log"
@@ -43,7 +45,7 @@ func (c *Client) Delete(endpoint string, params map[string]string) string {
         return c.execute("DELETE", endpoint, params)
 }
 
-func (c *Client) requestUrl(baseUrl, endpoint string, params map[string]string) string {
+func (c *Client) buildUrl(baseUrl, endpoint string, params map[string]string) string {
         query := make([]string, len(params))
         for k := range params {
                 query = append(query, k + "=" + params[k])
@@ -51,7 +53,16 @@ func (c *Client) requestUrl(baseUrl, endpoint string, params map[string]string) 
         return baseUrl + endpoint + "?" + strings.Join(query, "&")
 }
 
+func (c *Client) buildBody(params map[string]string) url.Values {
+	body := url.Values{}
+	for k := range params {
+		body.Add(k, params[k])
+	}
+	return body
+}
+
 func (c *Client) parseBody(resp *http.Response) string {
+	defer resp.Body.Close()
         body, err := ioutil.ReadAll(resp.Body)
         if err != nil {
                 log.Println(err)
@@ -63,7 +74,17 @@ func (c *Client) parseBody(resp *http.Response) string {
 func (c *Client) execute(method, endpoint string, params map[string]string) string {
         httpClient := &http.Client{}
 
-        req, requestErr := http.NewRequest(method, c.requestUrl(c.BaseUrl, endpoint, params), nil)
+	var (
+		req *http.Request
+		requestErr error
+	)
+
+        if method != "GET" {
+		req, requestErr = http.NewRequest(method, c.BaseUrl + endpoint, bytes.NewBufferString(c.buildBody(params).Encode()))
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+        } else {
+                req, requestErr = http.NewRequest(method, c.buildUrl(c.BaseUrl, endpoint, params), nil)
+        }
         if requestErr != nil {
                 panic(requestErr)
         }

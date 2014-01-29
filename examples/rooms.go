@@ -8,6 +8,7 @@ import (
 var apiKey = `api-key`
 
 func main() {
+	// GET
         c := chatwork.NewClient(apiKey)
         fmt.Print(c.Rooms())
         fmt.Print(c.Room("room-id"))
@@ -18,4 +19,11 @@ func main() {
         fmt.Print(c.RoomTask("room-id", "task-id"))
         fmt.Print(c.RoomFiles("room-id", map[string]string{}))
         fmt.Print(c.RoomFile("room-id", "file-id"))
+
+	// POST
+	fmt.Println(c.CreateRoom(map[string]string {
+		"name": "Test Room",
+		"members_admin_ids": `user-id`,
+		"description": "テスト",
+	}))
 }

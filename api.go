@@ -27,6 +27,17 @@ func (c *Client) Room(roomId string) string {
         return c.Get("/rooms/" + roomId, map[string]string{})
 }
 
+// params keys
+//   * name
+//   * members_admin_ids
+//   - description
+//   - icon_preset
+//   - members_member_ids
+//   - members_readonly_ids
+func (c *Client) CreateRoom(params map[string]string) string {
+        return c.Post("/rooms", params)
+}
+
 func (c *Client) RoomMembers(roomId string) string {
         return c.Get("/rooms/" + roomId + "/members", map[string]string{})
 }
