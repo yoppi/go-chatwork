@@ -34,15 +34,39 @@ func (c *Client) Me() Me {
 	return me
 }
 
-func (c *Client) MyStatus() []byte {
-	return c.Get("/my/status", map[string]string{})
+type Status struct {
+	Unread_Room_Num int
+	Mention_Room_Num int
+	Mytask_Room_Num int
+	Unread_Num int
+	Mention_Num int
+	MyTask_Num int
+}
+
+func (c *Client) MyStatus() Status {
+	ret := c.Get("/my/status", map[string]string{})
+	var status Status
+	json.Unmarshal(ret, &status)
+	return status
+}
+
+type MyTask struct {
+	Task
+	Room struct {
+		Room_id int
+		Name string
+		Icon_Path string
+	}
 }
 
 // params keys
 //  - assigned_by_account_id
 //  - status: [open, done]
-func (c *Client) MyTasks(params map[string]string) []byte {
-	return c.Get("/my/tasks", params)
+func (c *Client) MyTasks(params map[string]string) []MyTask {
+	ret := c.Get("/my/tasks", params)
+	var tasks []MyTask
+	json.Unmarshal(ret, &tasks)
+	return tasks
 }
 
 func (c *Client) Contacts() []byte {
