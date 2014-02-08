@@ -137,7 +137,7 @@ func (c *Client) UpdateRoom(roomId string, params map[string]string) []byte {
 }
 
 // params key
-//   * action_type
+//   * action_type: [leave, delete]
 func (c *Client) DeleteRoom(roomId string, params map[string]string) []byte {
 	return c.Delete("/rooms/"+roomId, params)
 }
