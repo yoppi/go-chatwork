@@ -6,8 +6,32 @@ import (
 
 const BaseUrl = `https://api.chatwork.com/v1`
 
-func (c *Client) Me() []byte {
-	return c.Get("/me", map[string]string{})
+type Me struct {
+	Account_Id int
+	Room_Id int
+	Name string
+	Chatwork_Id string
+	Organization_Id int
+	Organization_Name string
+	Department string
+	Title string
+	Url string
+	Introduction string
+	Mail string
+	Tel_Organization string
+	Tel_Extension string
+	Tel_Mobile string
+	Skype string
+	Facebook string
+	Twitter string
+	Avatar_Image_Url string
+}
+
+func (c *Client) Me() Me {
+	ret := c.Get("/me", map[string]string{})
+	var me Me
+	json.Unmarshal(ret, &me)
+	return me
 }
 
 func (c *Client) MyStatus() []byte {
