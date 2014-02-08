@@ -69,8 +69,22 @@ func (c *Client) MyTasks(params map[string]string) []MyTask {
 	return tasks
 }
 
-func (c *Client) Contacts() []byte {
-	return c.Get("/contacts", map[string]string{})
+type Contact struct {
+	Account_Id int
+	Room_Id int
+	Name string
+	Chatwork_Id string
+	Organization_id int
+	Organization_Name string
+	Department string
+	Avatar_Image_Url string
+}
+
+func (c *Client) Contacts() []Contact {
+	ret := c.Get("/contacts", map[string]string{})
+	var contacts []Contact
+	json.Unmarshal(ret, &contacts)
+	return contacts
 }
 
 type Room struct {
