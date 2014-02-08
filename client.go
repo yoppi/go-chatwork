@@ -26,19 +26,19 @@ func NewClient(apiKey string) *Client {
 	return &Client{ApiKey: apiKey, BaseUrl: BaseUrl}
 }
 
-func (c *Client) Get(endpoint string, params map[string]string) string {
+func (c *Client) Get(endpoint string, params map[string]string) []byte {
 	return c.execute("GET", endpoint, params)
 }
 
-func (c *Client) Post(endpoint string, params map[string]string) string {
+func (c *Client) Post(endpoint string, params map[string]string) []byte {
 	return c.execute("POST", endpoint, params)
 }
 
-func (c *Client) Put(endpoint string, params map[string]string) string {
+func (c *Client) Put(endpoint string, params map[string]string) []byte {
 	return c.execute("PUT", endpoint, params)
 }
 
-func (c *Client) Delete(endpoint string, params map[string]string) string {
+func (c *Client) Delete(endpoint string, params map[string]string) []byte {
 	return c.execute("DELETE", endpoint, params)
 }
 
@@ -58,17 +58,17 @@ func (c *Client) buildBody(params map[string]string) url.Values {
 	return body
 }
 
-func (c *Client) parseBody(resp *http.Response) string {
+func (c *Client) parseBody(resp *http.Response) []byte {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return ""
+		return []byte(``)
 	}
-	return string(body)
+	return body
 }
 
-func (c *Client) execute(method, endpoint string, params map[string]string) string {
+func (c *Client) execute(method, endpoint string, params map[string]string) []byte {
 	httpClient := &http.Client{}
 
 	var (
@@ -91,7 +91,7 @@ func (c *Client) execute(method, endpoint string, params map[string]string) stri
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		log.Println(err)
-		return ""
+		return []byte(``)
 	}
 
 	return c.parseBody(resp)
