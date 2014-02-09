@@ -6,7 +6,7 @@ import (
         "fmt"
 )
 
-var apiKey = `api-key`
+var apiKey string
 
 func init() {
 	flag.StringVar(&apiKey, "key", "", "Chatwork API key")
