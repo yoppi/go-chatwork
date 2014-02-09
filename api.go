@@ -7,24 +7,24 @@ import (
 const BaseUrl = `https://api.chatwork.com/v1`
 
 type Me struct {
-	Account_Id int
-	Room_Id int
-	Name string
-	Chatwork_Id string
-	Organization_Id int
-	Organization_Name string
-	Department string
-	Title string
-	Url string
-	Introduction string
-	Mail string
-	Tel_Organization string
-	Tel_Extension string
-	Tel_Mobile string
-	Skype string
-	Facebook string
-	Twitter string
-	Avatar_Image_Url string
+	AccountId        int    `json:"account_id"`
+	RoomId           int    `json:"room_id"`
+	Name             string `json:"name"`
+	ChatworkId       string `json:"chatwork_id"`
+	OrganizationId   int    `json:"organization_id"`
+	OrganizationName string `json:"organization_name"`
+	Department       string `json:"department"`
+	Title            string `json:"title"`
+	Url              string `json:"url"`
+	Introduction     string `json:"introduction"`
+	Mail             string `json:"mail"`
+	TelOrganization  string `json:"tel_organization"`
+	TelExtension     string `json:"tel_extension"`
+	TelMobile        string `json:"tel_mobile"`
+	Skype            string `json:"skype"`
+	Facebook         string `json:"facebook"`
+	Twitter          string `json:"twitter"`
+	AvatarImageUrl   string `json:"avatar_image_url"`
 }
 
 func (c *Client) Me() Me {
@@ -35,12 +35,12 @@ func (c *Client) Me() Me {
 }
 
 type Status struct {
-	Unread_Room_Num int
-	Mention_Room_Num int
-	Mytask_Room_Num int
-	Unread_Num int
-	Mention_Num int
-	MyTask_Num int
+	UnreadRoomNum  int `json:"unread_room_num"`
+	MentionRoomNum int `json:"mention_room_num"`
+	MytaskRoomNum  int `json:"mytask_room_num"`
+	UnreadNum      int `json:"unread_num"`
+	MentionNum     int `json:"mention_num"`
+	MyTaskNum      int `json:"mytask_num"`
 }
 
 func (c *Client) MyStatus() Status {
@@ -53,9 +53,9 @@ func (c *Client) MyStatus() Status {
 type MyTask struct {
 	Task
 	Room struct {
-		Room_id int
-		Name string
-		Icon_Path string
+		Roomid   int    `json:"room_id"`
+		Name     string `json:"name"`
+		IconPath string `json:"icon_path"`
 	}
 }
 
@@ -70,14 +70,14 @@ func (c *Client) MyTasks(params map[string]string) []MyTask {
 }
 
 type Contact struct {
-	Account_Id int
-	Room_Id int
-	Name string
-	Chatwork_Id string
-	Organization_id int
-	Organization_Name string
-	Department string
-	Avatar_Image_Url string
+	AccountId        int    `json:"account_id"`
+	RoomId           int    `json:"room_id"`
+	Name             string `json:"name"`
+	ChatworkId       string `json:"chatwork_id"`
+	OrganizationId   int    `json:"organization_id"`
+	OrganizationName string `json:"organization_name"`
+	Department       string `json:"department"`
+	AvatarImageUrl   string `json:"avatar_image_url"`
 }
 
 func (c *Client) Contacts() []Contact {
@@ -88,19 +88,19 @@ func (c *Client) Contacts() []Contact {
 }
 
 type Room struct {
-	Room_Id int
-	Name string
-	Type string
-	Role string
-	Sticky bool
-	Unread_Num int
-	Mention_Num int
-	Mytask_Num int
-	Message_Num int
-	File_Num int
-	Task_Num int
-	Icon_Path string
-	Last_Update_Time int64
+	RoomId         int    `json:"room_id"`
+	Name           string `json:"name"`
+	Type           string `json:"type"`
+	Role           string `json:"role"`
+	Sticky         bool   `json:"sticky"`
+	UnreadNum      int    `json:"unread_num"`
+	MentionNum     int    `json:"mention_num"`
+	MytaskNum      int    `json:"mytask_num"`
+	MessageNum     int    `json:"message_num"`
+	FileNum        int    `json:"file_num"`
+	TaskNum        int    `json:"task_num"`
+	IconPath       string `json:"icon_path"`
+	LastUpdateTime int64  `json:"last_update_time"`
 }
 
 func (c *Client) Rooms() []Room {
@@ -143,14 +143,14 @@ func (c *Client) DeleteRoom(roomId string, params map[string]string) []byte {
 }
 
 type Member struct {
-	Account_Id int
-	Role string
-	Name string
-	Chatwork_Id string
-	Organization_Id int
-	Organization_Name string
-	Department string
-	Avatar_Image_Url string
+	AccountId         int    `json:"account_id"`
+	Role              string `json:"role"`
+	Name              string `json:"name"`
+	ChatworkId        string `json:"chatwork_id"`
+	Organization_Id   int    `json:"organization_id"`
+	Organization_Name string `json:"organization_name"`
+	Department        string `json:"department"`
+	AvatarImageUrl    string `json:"avatar_image_url"`
 }
 
 func (c *Client) RoomMembers(roomId string) []Member {
@@ -169,17 +169,17 @@ func (c *Client) UpdateRoomMembers(roomId string, params map[string]string) []by
 }
 
 type Account struct {
-	Account_Id int
-	Name string
-	Avatar_Image_Url string
+	AccountId      int    `json:"account_id"`
+	Name           string `json:"name"`
+	AvatarImageUrl string `json:"avatar_image_url"`
 }
 
 type Message struct {
-	Message_Id int
-	Account Account
-	Body string
-	Send_Time int64
-	Update_Time int64
+	MessageId  int     `json:"message_id"`
+	Account    Account `json:"account"`
+	Body       string  `json:"body"`
+	SendTime   int64   `json:"send_time"`
+	UpdateTime int64   `json:"update_time"`
 }
 
 // XXX: Not yet implement
@@ -199,13 +199,13 @@ func (c *Client) RoomMessage(roomId, messageId string) Message {
 }
 
 type Task struct {
-	Task_Id int
-	Account Account
-	Assigned_By_Account Account
-	Message_Id int
-	Body string
-	Limit_Time int64
-	Status string
+	TaskId            int     `json:"task_id"`
+	Account           Account `json:"account"`
+	AssignedByAccount Account `json:"assigned_by_account"`
+	MessageId         int     `json:"message_id"`
+	Body              string  `json:"body"`
+	LimitTime         int64   `json:"limit_time"`
+	Status            string  `json:"status"`
 }
 
 func (c *Client) RoomTasks(roomId string) []Task {
@@ -231,12 +231,12 @@ func (c *Client) RoomTask(roomId, taskId string) Task {
 }
 
 type File struct {
-	File_Id int
-	Account Account
-	Message_Id int
-	Filename string
-	Filesize int
-	Upload_Time int64
+	FileId     int     `json:"file_id"`
+	Account    Account `json:"account"`
+	MessageId  int     `json:"message_id"`
+	Filename   string  `json:"filename"`
+	Filesize   int     `json:"filesize"`
+	UploadTime int64   `json:"upload_time"`
 }
 
 // params key
