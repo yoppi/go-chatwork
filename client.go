@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// HTTP interface of HTTP METHODS's methods
 type HTTP interface {
 	Get()
 	Post()
@@ -16,28 +17,34 @@ type HTTP interface {
 	Delete()
 }
 
+// Client ChatWork HTTP client
 type Client struct {
 	APIKey  string
 	BaseURL string
 	HTTP
 }
 
+// NewClient returns ChatWork HTTP Client
 func NewClient(apiKey string) *Client {
 	return &Client{APIKey: apiKey, BaseURL: BaseURL}
 }
 
+// Get GET method
 func (c *Client) Get(endpoint string, params map[string]string) []byte {
 	return c.execute("GET", endpoint, params)
 }
 
+// Post POST method
 func (c *Client) Post(endpoint string, params map[string]string) []byte {
 	return c.execute("POST", endpoint, params)
 }
 
+// Put PUT method
 func (c *Client) Put(endpoint string, params map[string]string) []byte {
 	return c.execute("PUT", endpoint, params)
 }
 
+// Delete DELETE method
 func (c *Client) Delete(endpoint string, params map[string]string) []byte {
 	return c.execute("DELETE", endpoint, params)
 }

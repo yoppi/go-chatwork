@@ -5,8 +5,10 @@ import (
 	"time"
 )
 
+// BaseURL ChatWork API endpooint URL
 const BaseURL = `https://api.chatwork.com/v1`
 
+// Me model
 type Me struct {
 	AccountID        int    `json:"account_id"`
 	RoomID           int    `json:"room_id"`
@@ -28,6 +30,7 @@ type Me struct {
 	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
+// Me GET "/me"
 func (c *Client) Me() Me {
 	ret := c.Get("/me", map[string]string{})
 	var me Me
@@ -35,6 +38,7 @@ func (c *Client) Me() Me {
 	return me
 }
 
+// Status model
 type Status struct {
 	UnreadRoomNum  int `json:"unread_room_num"`
 	MentionRoomNum int `json:"mention_room_num"`
@@ -44,6 +48,7 @@ type Status struct {
 	MyTaskNum      int `json:"mytask_num"`
 }
 
+// MyStatus GET "/my/status"
 func (c *Client) MyStatus() Status {
 	ret := c.Get("/my/status", map[string]string{})
 	var status Status
@@ -51,6 +56,7 @@ func (c *Client) MyStatus() Status {
 	return status
 }
 
+// MyTask model
 type MyTask struct {
 	Task
 	Room struct {
@@ -60,6 +66,7 @@ type MyTask struct {
 	}
 }
 
+// MyTasks GET "/my/tasks"
 // params keys
 //  - assigned_by_account_id
 //  - status: [open, done]
@@ -70,6 +77,7 @@ func (c *Client) MyTasks(params map[string]string) []MyTask {
 	return tasks
 }
 
+// Contact model
 type Contact struct {
 	AccountID        int    `json:"account_id"`
 	RoomID           int    `json:"room_id"`
@@ -81,6 +89,7 @@ type Contact struct {
 	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
+// Contacts GET "/contacts"
 func (c *Client) Contacts() []Contact {
 	ret := c.Get("/contacts", map[string]string{})
 	var contacts []Contact
@@ -88,6 +97,7 @@ func (c *Client) Contacts() []Contact {
 	return contacts
 }
 
+// Room model
 type Room struct {
 	RoomID         int    `json:"room_id"`
 	Name           string `json:"name"`
@@ -104,6 +114,7 @@ type Room struct {
 	LastUpdateTime int64  `json:"last_update_time"`
 }
 
+// Rooms GET "/rooms"
 func (c *Client) Rooms() []Room {
 	ret := c.Get("/rooms", map[string]string{})
 	var rooms []Room
@@ -111,6 +122,7 @@ func (c *Client) Rooms() []Room {
 	return rooms
 }
 
+// Room GET "/rooms/"
 func (c *Client) Room(roomID string) Room {
 	ret := c.Get("/rooms/"+roomID, map[string]string{})
 	var room Room
@@ -118,6 +130,7 @@ func (c *Client) Room(roomID string) Room {
 	return room
 }
 
+// CreateRoom POST "/rooms"
 // params keys
 //   * name
 //   * members_admin_ids
@@ -129,6 +142,7 @@ func (c *Client) CreateRoom(params map[string]string) []byte {
 	return c.Post("/rooms", params)
 }
 
+// UpdateRoom PUT "/rooms/"
 // params keys
 //   - description
 //   - icon_preset
@@ -137,12 +151,14 @@ func (c *Client) UpdateRoom(roomID string, params map[string]string) []byte {
 	return c.Put("/rooms/"+roomID, params)
 }
 
+// DeleteRoom DELETE "/rooms/"
 // params key
 //   * action_type: [leave, delete]
 func (c *Client) DeleteRoom(roomID string, params map[string]string) []byte {
 	return c.Delete("/rooms/"+roomID, params)
 }
 
+// Member model
 type Member struct {
 	AccountID        int    `json:"account_id"`
 	Role             string `json:"role"`
@@ -154,6 +170,7 @@ type Member struct {
 	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
+// RoomMembers GET "/rooms/{room_id}/members"
 func (c *Client) RoomMembers(roomID string) []Member {
 	ret := c.Get("/rooms/"+roomID+"/members", map[string]string{})
 	var members []Member
@@ -161,6 +178,7 @@ func (c *Client) RoomMembers(roomID string) []Member {
 	return members
 }
 
+// UpdateRoomMembers PUT "/rooms/{room_id}/members"
 // params keys
 //   * members_admin_ids
 //   - members_member_ids
@@ -169,12 +187,14 @@ func (c *Client) UpdateRoomMembers(roomID string, params map[string]string) []by
 	return c.Put("/rooms/"+roomID+"/members", params)
 }
 
+// Account model
 type Account struct {
 	AccountID      int    `json:"account_id"`
 	Name           string `json:"name"`
 	AvatarImageURL string `json:"avatar_image_url"`
 }
 
+// Message model
 type Message struct {
 	MessageID  int     `json:"message_id"`
 	Account    Account `json:"account"`
@@ -183,16 +203,20 @@ type Message struct {
 	UpdateTime int64   `json:"update_time"`
 }
 
+// SendDate time.Time representation of SendTime
 func (m Message) SendDate() time.Time {
 	return time.Unix(m.SendTime, 0)
 }
 
+// UpdateDate time.Time representation of UpdateTime
 func (m Message) UpdateDate() time.Time {
 	return time.Unix(m.UpdateTime, 0)
 }
 
+// Messages slice of Message
 type Messages []Message
 
+// RoomMessages GET "/rooms/{room_id}/messages"
 func (c *Client) RoomMessages(roomID string, params map[string]string) Messages {
 	ret := c.Get("/rooms/"+roomID+"/messages", params)
 	var msgs Messages
@@ -200,10 +224,12 @@ func (c *Client) RoomMessages(roomID string, params map[string]string) Messages 
 	return msgs
 }
 
+// PostRoomMessage POST "/rooms/{room_id}/messages"
 func (c *Client) PostRoomMessage(roomID string, body string) []byte {
 	return c.Post("/rooms/"+roomID+"/messages", map[string]string{"body": body})
 }
 
+// RoomMessage GET "/rooms/{room_id}/messages/{message_id}"
 func (c *Client) RoomMessage(roomID, messageID string) Message {
 	ret := c.Get("/rooms/"+roomID+"/messages/"+messageID, map[string]string{})
 	var message Message
@@ -211,6 +237,7 @@ func (c *Client) RoomMessage(roomID, messageID string) Message {
 	return message
 }
 
+// Task model
 type Task struct {
 	TaskID            int     `json:"task_id"`
 	Account           Account `json:"account"`
@@ -221,6 +248,7 @@ type Task struct {
 	Status            string  `json:"status"`
 }
 
+// RoomTasks GET "/rooms/{room_id}/tasks"
 func (c *Client) RoomTasks(roomID string) []Task {
 	ret := c.Get("/rooms/"+roomID+"/tasks", map[string]string{})
 	var tasks []Task
@@ -228,6 +256,7 @@ func (c *Client) RoomTasks(roomID string) []Task {
 	return tasks
 }
 
+// PostRoomTask POST "/rooms/{room_id}/tasks"
 // params keys
 //   * body
 //   * to_ids
@@ -236,6 +265,7 @@ func (c *Client) PostRoomTask(roomID string, params map[string]string) []byte {
 	return c.Post("/rooms/"+roomID+"/tasks", params)
 }
 
+// RoomTask GET "/rooms/{room_id}/tasks/tasks_id"
 func (c *Client) RoomTask(roomID, taskID string) Task {
 	ret := c.Get("/rooms/"+roomID+"/tasks/"+taskID, map[string]string{})
 	var task Task
@@ -243,6 +273,7 @@ func (c *Client) RoomTask(roomID, taskID string) Task {
 	return task
 }
 
+// File model
 type File struct {
 	FileID      int     `json:"file_id"`
 	Account     Account `json:"account"`
@@ -253,6 +284,7 @@ type File struct {
 	DownloadURL string  `json:"download_url"`
 }
 
+// RoomFiles GET "/rooms/{room_id}/files/"
 // params key
 //   - account_id
 func (c *Client) RoomFiles(roomID string, params map[string]string) []File {
@@ -262,6 +294,7 @@ func (c *Client) RoomFiles(roomID string, params map[string]string) []File {
 	return files
 }
 
+// RoomFile GET "/rooms/{room_id}/files/{file_id}"
 func (c *Client) RoomFile(roomID, fileID string, params map[string]string) File {
 	ret := c.Get("/rooms/"+roomID+"/files/"+fileID, params)
 	var file File
