@@ -231,12 +231,13 @@ func (c *Client) RoomTask(roomId, taskId string) Task {
 }
 
 type File struct {
-	FileId     int     `json:"file_id"`
-	Account    Account `json:"account"`
-	MessageId  int     `json:"message_id"`
-	Filename   string  `json:"filename"`
-	Filesize   int     `json:"filesize"`
-	UploadTime int64   `json:"upload_time"`
+	FileId      int     `json:"file_id"`
+	Account     Account `json:"account"`
+	MessageId   int     `json:"message_id"`
+	Filename    string  `json:"filename"`
+	Filesize    int     `json:"filesize"`
+	UploadTime  int64   `json:"upload_time"`
+	DownloadUrl string  `json:"download_url"`
 }
 
 // params key
@@ -248,8 +249,8 @@ func (c *Client) RoomFiles(roomId string, params map[string]string) []File {
 	return files
 }
 
-func (c *Client) RoomFile(roomId, fileId string) File {
-	ret := c.Get("/rooms/"+roomId+"/files/"+fileId, map[string]string{})
+func (c *Client) RoomFile(roomId, fileId string, params map[string]string) File {
+	ret := c.Get("/rooms/"+roomId+"/files/"+fileId, params)
 	var file File
 	json.Unmarshal(ret, &file)
 	return file
