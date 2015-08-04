@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	chatwork "github.com/yoppi/go-chatwork"
+	chatwork "github.com/griffin-stewie/go-chatwork"
 )
 
 var apiKey string
