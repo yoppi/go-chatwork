@@ -14,7 +14,7 @@ $ go get github.com/yoppi/go-chatwork
 package main
 
 import (
-  chatwork "github.com/yoppi/go-chatwork"
+  chatwork "github.com/griffin-stewie/go-chatwork"
 )
 
 func main() {
