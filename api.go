@@ -2,6 +2,7 @@ package gochatwork
 
 import (
 	"encoding/json"
+	"time"
 )
 
 const BaseUrl = `https://api.chatwork.com/v1`
@@ -182,9 +183,21 @@ type Message struct {
 	UpdateTime int64   `json:"update_time"`
 }
 
-// XXX: Not yet implement
-func (c *Client) RoomMessages(roomId string) []byte {
-	return c.Get("/rooms/"+roomId+"/messages", map[string]string{})
+func (m Message) SendDate() time.Time {
+	return time.Unix(m.SendTime, 0)
+}
+
+func (m Message) UpdateDate() time.Time {
+	return time.Unix(m.UpdateTime, 0)
+}
+
+type Messages []Message
+
+func (c *Client) RoomMessages(roomId string, params map[string]string) Messages {
+	ret := c.Get("/rooms/"+roomId+"/messages", params)
+	var msgs Messages
+	json.Unmarshal(ret, &msgs)
+	return msgs
 }
 
 func (c *Client) PostRoomMessage(roomId string, body string) []byte {
