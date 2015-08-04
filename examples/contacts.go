@@ -1,9 +1,10 @@
 package main
 
 import (
-        chatwork "github.com/yoppi/go-chatwork"
 	"flag"
-        "fmt"
+	"fmt"
+
+	chatwork "github.com/yoppi/go-chatwork"
 )
 
 var apiKey string
@@ -14,6 +15,6 @@ func init() {
 }
 
 func main() {
-        c := chatwork.NewClient(apiKey)
-        fmt.Printf("%+v\n", c.Contacts())
+	c := chatwork.NewClient(apiKey)
+	fmt.Printf("%+v\n", c.Contacts())
 }
