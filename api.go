@@ -122,7 +122,7 @@ func (c *Client) Rooms() []Room {
 	return rooms
 }
 
-// Room GET "/rooms/"
+// Room GET "/rooms/{room_id}"
 func (c *Client) Room(roomID string) Room {
 	ret := c.Get("/rooms/"+roomID, map[string]string{})
 	var room Room
@@ -142,7 +142,7 @@ func (c *Client) CreateRoom(params map[string]string) []byte {
 	return c.Post("/rooms", params)
 }
 
-// UpdateRoom PUT "/rooms/"
+// UpdateRoom PUT "/rooms/{room_id}"
 // params keys
 //   - description
 //   - icon_preset
@@ -151,7 +151,7 @@ func (c *Client) UpdateRoom(roomID string, params map[string]string) []byte {
 	return c.Put("/rooms/"+roomID, params)
 }
 
-// DeleteRoom DELETE "/rooms/"
+// DeleteRoom DELETE "/rooms/{room_id}"
 // params key
 //   * action_type: [leave, delete]
 func (c *Client) DeleteRoom(roomID string, params map[string]string) []byte {
