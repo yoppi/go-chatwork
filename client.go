@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type Http interface {
+type HTTP interface {
 	Get()
 	Post()
 	Put()
@@ -17,13 +17,13 @@ type Http interface {
 }
 
 type Client struct {
-	ApiKey  string
-	BaseUrl string
-	Http
+	APIKey  string
+	BaseURL string
+	HTTP
 }
 
 func NewClient(apiKey string) *Client {
-	return &Client{ApiKey: apiKey, BaseUrl: BaseUrl}
+	return &Client{APIKey: apiKey, BaseURL: BaseURL}
 }
 
 func (c *Client) Get(endpoint string, params map[string]string) []byte {
@@ -42,12 +42,12 @@ func (c *Client) Delete(endpoint string, params map[string]string) []byte {
 	return c.execute("DELETE", endpoint, params)
 }
 
-func (c *Client) buildUrl(baseUrl, endpoint string, params map[string]string) string {
+func (c *Client) buildURL(baseURL, endpoint string, params map[string]string) string {
 	query := make([]string, len(params))
 	for k := range params {
 		query = append(query, k+"="+params[k])
 	}
-	return baseUrl + endpoint + "?" + strings.Join(query, "&")
+	return baseURL + endpoint + "?" + strings.Join(query, "&")
 }
 
 func (c *Client) buildBody(params map[string]string) url.Values {
@@ -77,16 +77,16 @@ func (c *Client) execute(method, endpoint string, params map[string]string) []by
 	)
 
 	if method != "GET" {
-		req, requestErr = http.NewRequest(method, c.BaseUrl+endpoint, bytes.NewBufferString(c.buildBody(params).Encode()))
+		req, requestErr = http.NewRequest(method, c.BaseURL+endpoint, bytes.NewBufferString(c.buildBody(params).Encode()))
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	} else {
-		req, requestErr = http.NewRequest(method, c.buildUrl(c.BaseUrl, endpoint, params), nil)
+		req, requestErr = http.NewRequest(method, c.buildURL(c.BaseURL, endpoint, params), nil)
 	}
 	if requestErr != nil {
 		panic(requestErr)
 	}
 
-	req.Header.Add("X-ChatWorkToken", c.ApiKey)
+	req.Header.Add("X-ChatWorkToken", c.APIKey)
 
 	resp, err := httpClient.Do(req)
 	if err != nil {

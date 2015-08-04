@@ -5,18 +5,18 @@ import (
 	"time"
 )
 
-const BaseUrl = `https://api.chatwork.com/v1`
+const BaseURL = `https://api.chatwork.com/v1`
 
 type Me struct {
-	AccountId        int    `json:"account_id"`
-	RoomId           int    `json:"room_id"`
+	AccountID        int    `json:"account_id"`
+	RoomID           int    `json:"room_id"`
 	Name             string `json:"name"`
-	ChatworkId       string `json:"chatwork_id"`
-	OrganizationId   int    `json:"organization_id"`
+	ChatworkID       string `json:"chatwork_id"`
+	OrganizationID   int    `json:"organization_id"`
 	OrganizationName string `json:"organization_name"`
 	Department       string `json:"department"`
 	Title            string `json:"title"`
-	Url              string `json:"url"`
+	URL              string `json:"url"`
 	Introduction     string `json:"introduction"`
 	Mail             string `json:"mail"`
 	TelOrganization  string `json:"tel_organization"`
@@ -25,7 +25,7 @@ type Me struct {
 	Skype            string `json:"skype"`
 	Facebook         string `json:"facebook"`
 	Twitter          string `json:"twitter"`
-	AvatarImageUrl   string `json:"avatar_image_url"`
+	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
 func (c *Client) Me() Me {
@@ -71,14 +71,14 @@ func (c *Client) MyTasks(params map[string]string) []MyTask {
 }
 
 type Contact struct {
-	AccountId        int    `json:"account_id"`
-	RoomId           int    `json:"room_id"`
+	AccountID        int    `json:"account_id"`
+	RoomID           int    `json:"room_id"`
 	Name             string `json:"name"`
-	ChatworkId       string `json:"chatwork_id"`
-	OrganizationId   int    `json:"organization_id"`
+	ChatworkID       string `json:"chatwork_id"`
+	OrganizationID   int    `json:"organization_id"`
 	OrganizationName string `json:"organization_name"`
 	Department       string `json:"department"`
-	AvatarImageUrl   string `json:"avatar_image_url"`
+	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
 func (c *Client) Contacts() []Contact {
@@ -89,7 +89,7 @@ func (c *Client) Contacts() []Contact {
 }
 
 type Room struct {
-	RoomId         int    `json:"room_id"`
+	RoomID         int    `json:"room_id"`
 	Name           string `json:"name"`
 	Type           string `json:"type"`
 	Role           string `json:"role"`
@@ -111,8 +111,8 @@ func (c *Client) Rooms() []Room {
 	return rooms
 }
 
-func (c *Client) Room(roomId string) Room {
-	ret := c.Get("/rooms/"+roomId, map[string]string{})
+func (c *Client) Room(roomID string) Room {
+	ret := c.Get("/rooms/"+roomID, map[string]string{})
 	var room Room
 	json.Unmarshal(ret, &room)
 	return room
@@ -133,29 +133,29 @@ func (c *Client) CreateRoom(params map[string]string) []byte {
 //   - description
 //   - icon_preset
 //   - name
-func (c *Client) UpdateRoom(roomId string, params map[string]string) []byte {
-	return c.Put("/rooms/"+roomId, params)
+func (c *Client) UpdateRoom(roomID string, params map[string]string) []byte {
+	return c.Put("/rooms/"+roomID, params)
 }
 
 // params key
 //   * action_type: [leave, delete]
-func (c *Client) DeleteRoom(roomId string, params map[string]string) []byte {
-	return c.Delete("/rooms/"+roomId, params)
+func (c *Client) DeleteRoom(roomID string, params map[string]string) []byte {
+	return c.Delete("/rooms/"+roomID, params)
 }
 
 type Member struct {
-	AccountId         int    `json:"account_id"`
-	Role              string `json:"role"`
-	Name              string `json:"name"`
-	ChatworkId        string `json:"chatwork_id"`
-	Organization_Id   int    `json:"organization_id"`
-	Organization_Name string `json:"organization_name"`
-	Department        string `json:"department"`
-	AvatarImageUrl    string `json:"avatar_image_url"`
+	AccountID        int    `json:"account_id"`
+	Role             string `json:"role"`
+	Name             string `json:"name"`
+	ChatworkID       string `json:"chatwork_id"`
+	OrganizationID   int    `json:"organization_id"`
+	OrganizationName string `json:"organization_name"`
+	Department       string `json:"department"`
+	AvatarImageURL   string `json:"avatar_image_url"`
 }
 
-func (c *Client) RoomMembers(roomId string) []Member {
-	ret := c.Get("/rooms/"+roomId+"/members", map[string]string{})
+func (c *Client) RoomMembers(roomID string) []Member {
+	ret := c.Get("/rooms/"+roomID+"/members", map[string]string{})
 	var members []Member
 	json.Unmarshal(ret, &members)
 	return members
@@ -165,18 +165,18 @@ func (c *Client) RoomMembers(roomId string) []Member {
 //   * members_admin_ids
 //   - members_member_ids
 //   - members_readonly_ids
-func (c *Client) UpdateRoomMembers(roomId string, params map[string]string) []byte {
-	return c.Put("/rooms/"+roomId+"/members", params)
+func (c *Client) UpdateRoomMembers(roomID string, params map[string]string) []byte {
+	return c.Put("/rooms/"+roomID+"/members", params)
 }
 
 type Account struct {
-	AccountId      int    `json:"account_id"`
+	AccountID      int    `json:"account_id"`
 	Name           string `json:"name"`
-	AvatarImageUrl string `json:"avatar_image_url"`
+	AvatarImageURL string `json:"avatar_image_url"`
 }
 
 type Message struct {
-	MessageId  int     `json:"message_id"`
+	MessageID  int     `json:"message_id"`
 	Account    Account `json:"account"`
 	Body       string  `json:"body"`
 	SendTime   int64   `json:"send_time"`
@@ -193,36 +193,36 @@ func (m Message) UpdateDate() time.Time {
 
 type Messages []Message
 
-func (c *Client) RoomMessages(roomId string, params map[string]string) Messages {
-	ret := c.Get("/rooms/"+roomId+"/messages", params)
+func (c *Client) RoomMessages(roomID string, params map[string]string) Messages {
+	ret := c.Get("/rooms/"+roomID+"/messages", params)
 	var msgs Messages
 	json.Unmarshal(ret, &msgs)
 	return msgs
 }
 
-func (c *Client) PostRoomMessage(roomId string, body string) []byte {
-	return c.Post("/rooms/"+roomId+"/messages", map[string]string{"body": body})
+func (c *Client) PostRoomMessage(roomID string, body string) []byte {
+	return c.Post("/rooms/"+roomID+"/messages", map[string]string{"body": body})
 }
 
-func (c *Client) RoomMessage(roomId, messageId string) Message {
-	ret := c.Get("/rooms/"+roomId+"/messages/"+messageId, map[string]string{})
+func (c *Client) RoomMessage(roomID, messageID string) Message {
+	ret := c.Get("/rooms/"+roomID+"/messages/"+messageID, map[string]string{})
 	var message Message
 	json.Unmarshal(ret, &message)
 	return message
 }
 
 type Task struct {
-	TaskId            int     `json:"task_id"`
+	TaskID            int     `json:"task_id"`
 	Account           Account `json:"account"`
 	AssignedByAccount Account `json:"assigned_by_account"`
-	MessageId         int     `json:"message_id"`
+	MessageID         int     `json:"message_id"`
 	Body              string  `json:"body"`
 	LimitTime         int64   `json:"limit_time"`
 	Status            string  `json:"status"`
 }
 
-func (c *Client) RoomTasks(roomId string) []Task {
-	ret := c.Get("/rooms/"+roomId+"/tasks", map[string]string{})
+func (c *Client) RoomTasks(roomID string) []Task {
+	ret := c.Get("/rooms/"+roomID+"/tasks", map[string]string{})
 	var tasks []Task
 	json.Unmarshal(ret, &tasks)
 	return tasks
@@ -232,38 +232,38 @@ func (c *Client) RoomTasks(roomId string) []Task {
 //   * body
 //   * to_ids
 //   - limit
-func (c *Client) PostRoomTask(roomId string, params map[string]string) []byte {
-	return c.Post("/rooms/"+roomId+"/tasks", params)
+func (c *Client) PostRoomTask(roomID string, params map[string]string) []byte {
+	return c.Post("/rooms/"+roomID+"/tasks", params)
 }
 
-func (c *Client) RoomTask(roomId, taskId string) Task {
-	ret := c.Get("/rooms/"+roomId+"/tasks/"+taskId, map[string]string{})
+func (c *Client) RoomTask(roomID, taskID string) Task {
+	ret := c.Get("/rooms/"+roomID+"/tasks/"+taskID, map[string]string{})
 	var task Task
 	json.Unmarshal(ret, &task)
 	return task
 }
 
 type File struct {
-	FileId      int     `json:"file_id"`
+	FileID      int     `json:"file_id"`
 	Account     Account `json:"account"`
-	MessageId   int     `json:"message_id"`
+	MessageID   int     `json:"message_id"`
 	Filename    string  `json:"filename"`
 	Filesize    int     `json:"filesize"`
 	UploadTime  int64   `json:"upload_time"`
-	DownloadUrl string  `json:"download_url"`
+	DownloadURL string  `json:"download_url"`
 }
 
 // params key
 //   - account_id
-func (c *Client) RoomFiles(roomId string, params map[string]string) []File {
-	ret := c.Get("/rooms/"+roomId+"/files", params)
+func (c *Client) RoomFiles(roomID string, params map[string]string) []File {
+	ret := c.Get("/rooms/"+roomID+"/files", params)
 	var files []File
 	json.Unmarshal(ret, &files)
 	return files
 }
 
-func (c *Client) RoomFile(roomId, fileId string, params map[string]string) File {
-	ret := c.Get("/rooms/"+roomId+"/files/"+fileId, params)
+func (c *Client) RoomFile(roomID, fileID string, params map[string]string) File {
+	ret := c.Get("/rooms/"+roomID+"/files/"+fileID, params)
 	var file File
 	json.Unmarshal(ret, &file)
 	return file
