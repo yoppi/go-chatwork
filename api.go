@@ -295,6 +295,8 @@ func (c *Client) RoomFiles(roomID string, params map[string]string) []File {
 }
 
 // RoomFile GET "/rooms/{room_id}/files/{file_id}"
+// params key
+//   - create_download_url: ["0", "1"]
 func (c *Client) RoomFile(roomID, fileID string, params map[string]string) File {
 	ret := c.Get("/rooms/"+roomID+"/files/"+fileID, params)
 	var file File
