@@ -248,6 +248,11 @@ type Task struct {
 	Status            string  `json:"status"`
 }
 
+// LimitDate time.Time representation of LimitTime
+func (t Task) LimitDate() time.Time {
+	return time.Unix(t.LimitTime, 0)
+}
+
 // RoomTasks GET "/rooms/{room_id}/tasks"
 // params keys
 //  - account_id
@@ -286,6 +291,11 @@ type File struct {
 	Filesize    int     `json:"filesize"`
 	UploadTime  int64   `json:"upload_time"`
 	DownloadURL string  `json:"download_url"`
+}
+
+// UploadDate time.Time representation of UploadTime
+func (f File) UploadDate() time.Time {
+	return time.Unix(f.UploadTime, 0)
 }
 
 // RoomFiles GET "/rooms/{room_id}/files/"
