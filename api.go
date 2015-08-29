@@ -249,8 +249,12 @@ type Task struct {
 }
 
 // RoomTasks GET "/rooms/{room_id}/tasks"
-func (c *Client) RoomTasks(roomID string) []Task {
-	ret := c.Get("/rooms/"+roomID+"/tasks", map[string]string{})
+// params keys
+//  - account_id
+//  - assigned_by_account_id
+//  - status: [open, done]
+func (c *Client) RoomTasks(roomID string, params map[string]string) []Task {
+	ret := c.Get("/rooms/"+roomID+"/tasks", params)
 	var tasks []Task
 	json.Unmarshal(ret, &tasks)
 	return tasks
