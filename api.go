@@ -112,6 +112,7 @@ type Room struct {
 	TaskNum        int    `json:"task_num"`
 	IconPath       string `json:"icon_path"`
 	LastUpdateTime int64  `json:"last_update_time"`
+	Description    string `json:"description"`
 }
 
 // Rooms GET "/rooms"
