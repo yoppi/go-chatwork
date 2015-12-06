@@ -33,4 +33,13 @@ func main() {
 }
 ```
 
+### for GoogleAppEngine/Go
+
+```go
+c := appengine.NewContext(r)
+client := urlfetch.Client(c)
+chatwork := chatwork.NewClient(`api-key`)
+chatwork.HTTPClient = client
+```
+
 See more examples in `examples` directory.
