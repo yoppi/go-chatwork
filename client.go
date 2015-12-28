@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -19,10 +20,11 @@ type HTTP interface {
 
 // Client ChatWork HTTP client
 type Client struct {
-	APIKey     string
-	BaseURL    string
+	APIKey  string
+	BaseURL string
 	HTTP
-	HTTPClient *http.Client
+	HTTPClient      *http.Client
+	latestRateLimit *RateLimit
 }
 
 // NewClient returns ChatWork HTTP Client
@@ -99,10 +101,21 @@ func (c *Client) execute(method, endpoint string, params map[string]string) []by
 	req.Header.Add("X-ChatWorkToken", c.APIKey)
 
 	resp, err := c.HTTPClient.Do(req)
+
+	c.latestRateLimit = c.rateLimit(resp)
+
 	if err != nil {
 		log.Println(err)
 		return []byte(``)
 	}
 
 	return c.parseBody(resp)
+}
+
+func (c *Client) rateLimit(resp *http.Response) *RateLimit {
+	limit, _ := strconv.Atoi(resp.Header.Get("X-RateLimit-Limit"))
+	remaining, _ := strconv.Atoi(resp.Header.Get("X-RateLimit-Remaining"))
+	resetTime, _ := strconv.ParseInt(resp.Header.Get("X-RateLimit-Reset"), 10, 64)
+
+	return &RateLimit{Limit: limit, Remaining: remaining, ResetTime: resetTime}
 }
