@@ -18,4 +18,5 @@ func main() {
 	c := chatwork.NewClient(apiKey)
 	fmt.Printf("%+v\n", c.MyStatus())
 	fmt.Printf("%+v\n", c.MyTasks(map[string]string{}))
+	fmt.Printf("%+v\n", c.RateLimit())
 }

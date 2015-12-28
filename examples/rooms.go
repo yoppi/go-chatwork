@@ -49,4 +49,6 @@ func main() {
 	c.DeleteRoom(`room-id`, map[string]string{
 		"action_type": "delete",
 	})
+
+	fmt.Printf("%+v\n", c.RateLimit())
 }
