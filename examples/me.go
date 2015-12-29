@@ -17,4 +17,5 @@ func init() {
 func main() {
 	c := chatwork.NewClient(apiKey)
 	fmt.Printf("%+v\n", c.Me())
+	fmt.Printf("%+v\n", c.RateLimit())
 }

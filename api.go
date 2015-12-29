@@ -318,3 +318,23 @@ func (c *Client) RoomFile(roomID, fileID string, params map[string]string) File 
 	json.Unmarshal(ret, &file)
 	return file
 }
+
+// RateLimit model
+type RateLimit struct {
+	Limit     int
+	Remaining int
+	ResetTime int64
+}
+
+// ResetDate time.Time representation of ResetTime
+func (r RateLimit) ResetDate() time.Time {
+	return time.Unix(r.ResetTime, 0)
+}
+
+func (c *Client) RateLimit() *RateLimit {
+	if c.latestRateLimit == nil {
+		// When API is not called even once, call API and get RateLimit in response header
+		c.Me()
+	}
+	return c.latestRateLimit
+}

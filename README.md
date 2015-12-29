@@ -28,6 +28,8 @@ func main() {
     "assigned_by_account_id": "123",
     "status": "open"
   })
+  
+  chatwork.RateLimit()
 
   ...
 }
