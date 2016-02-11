@@ -5,7 +5,7 @@
 ## Install
 
 ```
-$ go get github.com/yoppi/go-chatwork
+$ go get github.com/griffin-stewie/go-chatwork
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ func main() {
     "assigned_by_account_id": "123",
     "status": "open"
   })
-  
+
   chatwork.RateLimit()
 
   ...
