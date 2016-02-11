@@ -16,6 +16,8 @@ func init() {
 
 func main() {
 	c := chatwork.NewClient(apiKey)
-	fmt.Printf("%+v\n", c.Contacts())
+	b, e := c.Contacts()
+	fmt.Printf("%+v\n", b)
+	fmt.Printf("%+v\n", e)
 	fmt.Printf("%+v\n", c.RateLimit())
 }
