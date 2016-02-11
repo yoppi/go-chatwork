@@ -5,7 +5,7 @@
 ## Install
 
 ```
-$ go get github.com/yoppi/go-chatwork
+$ go get github.com/griffin-stewie/go-chatwork
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ $ go get github.com/yoppi/go-chatwork
 package main
 
 import (
-  chatwork "github.com/yoppi/go-chatwork"
+  chatwork "github.com/griffin-stewie/go-chatwork"
 )
 
 func main() {
@@ -29,8 +29,19 @@ func main() {
     "status": "open"
   })
 
+  chatwork.RateLimit()
+
   ...
 }
+```
+
+### for GoogleAppEngine/Go
+
+```go
+c := appengine.NewContext(r)
+client := urlfetch.Client(c)
+chatwork := chatwork.NewClient(`api-key`)
+chatwork.HTTPClient = client
 ```
 
 See more examples in `examples` directory.
