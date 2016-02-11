@@ -2,6 +2,8 @@ package gochatwork
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,6 +18,20 @@ type HTTP interface {
 	Post()
 	Put()
 	Delete()
+}
+
+// ChatWorkError is error model
+type ChatWorkError struct {
+	Errors []string `json:"errors"`
+}
+
+// error returns Errors
+func (e *ChatWorkError) error() error {
+	if len(e.Errors) == 0 {
+		return nil
+	}
+
+	return errors.New(strings.Join(e.Errors, ", "))
 }
 
 // Client ChatWork HTTP client
@@ -33,22 +49,22 @@ func NewClient(apiKey string) *Client {
 }
 
 // Get GET method
-func (c *Client) Get(endpoint string, params map[string]string) []byte {
+func (c *Client) Get(endpoint string, params map[string]string) ([]byte, error) {
 	return c.execute("GET", endpoint, params)
 }
 
 // Post POST method
-func (c *Client) Post(endpoint string, params map[string]string) []byte {
+func (c *Client) Post(endpoint string, params map[string]string) ([]byte, error) {
 	return c.execute("POST", endpoint, params)
 }
 
 // Put PUT method
-func (c *Client) Put(endpoint string, params map[string]string) []byte {
+func (c *Client) Put(endpoint string, params map[string]string) ([]byte, error) {
 	return c.execute("PUT", endpoint, params)
 }
 
 // Delete DELETE method
-func (c *Client) Delete(endpoint string, params map[string]string) []byte {
+func (c *Client) Delete(endpoint string, params map[string]string) ([]byte, error) {
 	return c.execute("DELETE", endpoint, params)
 }
 
@@ -68,17 +84,24 @@ func (c *Client) buildBody(params map[string]string) url.Values {
 	return body
 }
 
-func (c *Client) parseBody(resp *http.Response) []byte {
+func (c *Client) parseBody(resp *http.Response) ([]byte, error) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return []byte(``)
+		return []byte(``), err
 	}
-	return body
+
+	if resp.StatusCode != 200 {
+		var er ChatWorkError
+		json.Unmarshal(body, &er)
+		return []byte(``), er.error()
+	}
+
+	return body, nil
 }
 
-func (c *Client) execute(method, endpoint string, params map[string]string) []byte {
+func (c *Client) execute(method, endpoint string, params map[string]string) ([]byte, error) {
 	if c.HTTPClient == nil {
 		c.HTTPClient = &http.Client{}
 	}
@@ -101,12 +124,10 @@ func (c *Client) execute(method, endpoint string, params map[string]string) []by
 	req.Header.Add("X-ChatWorkToken", c.APIKey)
 
 	resp, err := c.HTTPClient.Do(req)
-
 	c.latestRateLimit = c.rateLimit(resp)
 
 	if err != nil {
-		log.Println(err)
-		return []byte(``)
+		return []byte(``), err
 	}
 
 	return c.parseBody(resp)
