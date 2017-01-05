@@ -182,9 +182,11 @@ type Message struct {
 	UpdateTime int64   `json:"update_time"`
 }
 
-// XXX: Not yet implement
-func (c *Client) RoomMessages(roomId string) []byte {
-	return c.Get("/rooms/"+roomId+"/messages", map[string]string{})
+func (c *Client) RoomMessages(roomId string) []Message {
+	ret := c.Get("/rooms/"+roomId+"/messages", map[string]string{})
+	var messages []Message
+	json.Unmarshal(ret, &messages)
+	return messages
 }
 
 func (c *Client) PostRoomMessage(roomId string, body string) []byte {
