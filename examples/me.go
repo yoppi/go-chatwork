@@ -9,7 +9,7 @@ import (
 func Me(key string) {
 	c := chatwork.NewClient(key)
 	if me, err := c.Me(); err != nil {
-		fmt.Printf("error: %w\n", err)
+		fmt.Printf("error: %v\n", err)
 	} else {
 		fmt.Printf("%+v\n", me)
 	}
