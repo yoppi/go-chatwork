@@ -1,3 +1,15 @@
+# go-chatwork
+
+[ChatWork](https://www.chatwork.com/) client for Golang.
+
+## ❗ Notice
+
+This project is a fork of [yoppi/go-chatwork](https://github.com/yoppi/go-chatwork).
+
+<details>
+
+<summary>Original README</summary>
+
 # ChatWork API Client for Golang
 
 [ChatWork](http://www.chatwork.com/) client for Golang.
@@ -34,3 +46,5 @@ func main() {
 ```
 
 See more examples in `examples` directory.
+
+</details>

@@ -1,10 +1,8 @@
-package gochatwork
+package chatwork
 
 import (
 	"encoding/json"
 )
-
-const BaseUrl = `https://api.chatwork.com/v1`
 
 type Me struct {
 	AccountId        int    `json:"account_id"`
@@ -27,11 +25,14 @@ type Me struct {
 	AvatarImageUrl   string `json:"avatar_image_url"`
 }
 
-func (c *Client) Me() Me {
-	ret := c.Get("/me", map[string]string{})
+func (c *Client) Me() (*Me, error) {
+	ret, err := c.Get("/me", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var me Me
-	json.Unmarshal(ret, &me)
-	return me
+	err = json.Unmarshal(ret, &me)
+	return &me, err
 }
 
 type Status struct {
@@ -43,11 +44,14 @@ type Status struct {
 	MyTaskNum      int `json:"mytask_num"`
 }
 
-func (c *Client) MyStatus() Status {
-	ret := c.Get("/my/status", map[string]string{})
+func (c *Client) MyStatus() (*Status, error) {
+	ret, err := c.Get("/my/status", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var status Status
-	json.Unmarshal(ret, &status)
-	return status
+	err = json.Unmarshal(ret, &status)
+	return &status, err
 }
 
 type MyTask struct {
@@ -62,11 +66,14 @@ type MyTask struct {
 // params keys
 //  - assigned_by_account_id
 //  - status: [open, done]
-func (c *Client) MyTasks(params map[string]string) []MyTask {
-	ret := c.Get("/my/tasks", params)
+func (c *Client) MyTasks(params *Params) ([]MyTask, error) {
+	ret, err := c.Get("/my/tasks", params)
+	if err != nil {
+		return nil, err
+	}
 	var tasks []MyTask
-	json.Unmarshal(ret, &tasks)
-	return tasks
+	err = json.Unmarshal(ret, &tasks)
+	return tasks, err
 }
 
 type Contact struct {
@@ -80,11 +87,14 @@ type Contact struct {
 	AvatarImageUrl   string `json:"avatar_image_url"`
 }
 
-func (c *Client) Contacts() []Contact {
-	ret := c.Get("/contacts", map[string]string{})
+func (c *Client) Contacts() ([]Contact, error) {
+	ret, err := c.Get("/contacts", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var contacts []Contact
-	json.Unmarshal(ret, &contacts)
-	return contacts
+	err = json.Unmarshal(ret, &contacts)
+	return contacts, err
 }
 
 type Room struct {
@@ -103,18 +113,24 @@ type Room struct {
 	LastUpdateTime int64  `json:"last_update_time"`
 }
 
-func (c *Client) Rooms() []Room {
-	ret := c.Get("/rooms", map[string]string{})
+func (c *Client) Rooms() ([]Room, error) {
+	ret, err := c.Get("/rooms", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var rooms []Room
-	json.Unmarshal(ret, &rooms)
-	return rooms
+	err = json.Unmarshal(ret, &rooms)
+	return rooms, err
 }
 
-func (c *Client) Room(roomId string) Room {
-	ret := c.Get("/rooms/"+roomId, map[string]string{})
+func (c *Client) Room(roomId string) (*Room, error) {
+	ret, err := c.Get("/rooms/"+roomId, &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var room Room
-	json.Unmarshal(ret, &room)
-	return room
+	err = json.Unmarshal(ret, &room)
+	return &room, err
 }
 
 // params keys
@@ -124,7 +140,7 @@ func (c *Client) Room(roomId string) Room {
 //   - icon_preset
 //   - members_member_ids
 //   - members_readonly_ids
-func (c *Client) CreateRoom(params map[string]string) []byte {
+func (c *Client) CreateRoom(params *Params) ([]byte, error) {
 	return c.Post("/rooms", params)
 }
 
@@ -132,13 +148,13 @@ func (c *Client) CreateRoom(params map[string]string) []byte {
 //   - description
 //   - icon_preset
 //   - name
-func (c *Client) UpdateRoom(roomId string, params map[string]string) []byte {
+func (c *Client) UpdateRoom(roomId string, params *Params) ([]byte, error) {
 	return c.Put("/rooms/"+roomId, params)
 }
 
 // params key
 //   * action_type: [leave, delete]
-func (c *Client) DeleteRoom(roomId string, params map[string]string) []byte {
+func (c *Client) DeleteRoom(roomId string, params *Params) ([]byte, error) {
 	return c.Delete("/rooms/"+roomId, params)
 }
 
@@ -153,18 +169,21 @@ type Member struct {
 	AvatarImageUrl    string `json:"avatar_image_url"`
 }
 
-func (c *Client) RoomMembers(roomId string) []Member {
-	ret := c.Get("/rooms/"+roomId+"/members", map[string]string{})
+func (c *Client) RoomMembers(roomId string) ([]Member, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/members", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var members []Member
-	json.Unmarshal(ret, &members)
-	return members
+	err = json.Unmarshal(ret, &members)
+	return members, err
 }
 
 // params keys
 //   * members_admin_ids
 //   - members_member_ids
 //   - members_readonly_ids
-func (c *Client) UpdateRoomMembers(roomId string, params map[string]string) []byte {
+func (c *Client) UpdateRoomMembers(roomId string, params *Params) ([]byte, error) {
 	return c.Put("/rooms/"+roomId+"/members", params)
 }
 
@@ -182,54 +201,66 @@ type Message struct {
 	UpdateTime int64   `json:"update_time"`
 }
 
-func (c *Client) RoomMessages(roomId string) []Message {
-	ret := c.Get("/rooms/"+roomId+"/messages", map[string]string{})
+func (c *Client) RoomMessages(roomId string) ([]Message, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/messages", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var messages []Message
-	json.Unmarshal(ret, &messages)
-	return messages
+	err = json.Unmarshal(ret, &messages)
+	return messages, err
 }
 
-func (c *Client) PostRoomMessage(roomId string, body string) []byte {
-	return c.Post("/rooms/"+roomId+"/messages", map[string]string{"body": body})
+func (c *Client) PostRoomMessage(roomId string, body string) ([]byte, error) {
+	return c.Post("/rooms/"+roomId+"/messages", &Params{"body": body})
 }
 
-func (c *Client) RoomMessage(roomId, messageId string) Message {
-	ret := c.Get("/rooms/"+roomId+"/messages/"+messageId, map[string]string{})
+func (c *Client) RoomMessage(roomId, messageId string) (*Message, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/messages/"+messageId, &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var message Message
-	json.Unmarshal(ret, &message)
-	return message
+	err = json.Unmarshal(ret, &message)
+	return &message, err
 }
 
 type Task struct {
 	TaskId            int     `json:"task_id"`
 	Account           Account `json:"account"`
 	AssignedByAccount Account `json:"assigned_by_account"`
-	MessageId         int     `json:"message_id"`
+	MessageId         string  `json:"message_id"`
 	Body              string  `json:"body"`
 	LimitTime         int64   `json:"limit_time"`
 	Status            string  `json:"status"`
 }
 
-func (c *Client) RoomTasks(roomId string) []Task {
-	ret := c.Get("/rooms/"+roomId+"/tasks", map[string]string{})
+func (c *Client) RoomTasks(roomId string) ([]Task, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/tasks", &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var tasks []Task
-	json.Unmarshal(ret, &tasks)
-	return tasks
+	err = json.Unmarshal(ret, &tasks)
+	return tasks, err
 }
 
 // params keys
 //   * body
 //   * to_ids
 //   - limit
-func (c *Client) PostRoomTask(roomId string, params map[string]string) []byte {
+func (c *Client) PostRoomTask(roomId string, params *Params) ([]byte, error) {
 	return c.Post("/rooms/"+roomId+"/tasks", params)
 }
 
-func (c *Client) RoomTask(roomId, taskId string) Task {
-	ret := c.Get("/rooms/"+roomId+"/tasks/"+taskId, map[string]string{})
+func (c *Client) RoomTask(roomId, taskId string) (*Task, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/tasks/"+taskId, &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var task Task
-	json.Unmarshal(ret, &task)
-	return task
+	err = json.Unmarshal(ret, &task)
+	return &task, err
 }
 
 type File struct {
@@ -243,16 +274,22 @@ type File struct {
 
 // params key
 //   - account_id
-func (c *Client) RoomFiles(roomId string, params map[string]string) []File {
-	ret := c.Get("/rooms/"+roomId+"/files", params)
+func (c *Client) RoomFiles(roomId string, params *Params) ([]File, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/files", params)
+	if err != nil {
+		return nil, err
+	}
 	var files []File
-	json.Unmarshal(ret, &files)
-	return files
+	err = json.Unmarshal(ret, &files)
+	return files, err
 }
 
-func (c *Client) RoomFile(roomId, fileId string) File {
-	ret := c.Get("/rooms/"+roomId+"/files/"+fileId, map[string]string{})
+func (c *Client) RoomFile(roomId, fileId string) (*File, error) {
+	ret, err := c.Get("/rooms/"+roomId+"/files/"+fileId, &Params{})
+	if err != nil {
+		return nil, err
+	}
 	var file File
-	json.Unmarshal(ret, &file)
-	return file
+	err = json.Unmarshal(ret, &file)
+	return &file, err
 }

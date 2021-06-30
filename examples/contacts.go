@@ -1,19 +1,17 @@
-package main
+package examples
 
 import (
-        chatwork "github.com/yoppi/go-chatwork"
-	"flag"
-        "fmt"
+	"fmt"
+
+	"github.com/lettenj61/go-chatwork"
 )
 
-var apiKey string
+func Contacts(key string) {
+	c := chatwork.NewClient(key)
 
-func init() {
-	flag.StringVar(&apiKey, "key", "", "Chatwork API key")
-	flag.Parse()
-}
-
-func main() {
-        c := chatwork.NewClient(apiKey)
-        fmt.Printf("%+v\n", c.Contacts())
+	if res, err := c.Contacts(); err != nil {
+		fmt.Printf("error: %v\n", err)
+	} else {
+		fmt.Printf("%+v\n", res)
+	}
 }
